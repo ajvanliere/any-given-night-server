@@ -1,16 +1,18 @@
-const express = require('express')
-const app =express()
-const socketIo = require('socket.io')
-const cors = require('cors')
-const bodyParser = require('body-parser')
-const Questions = require('./model')
+const express = require('express');
+const app =express();
+const socketIo = require('socket.io');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const Questions = require('./model');
 const authRouter = require('./auth/routes');
+const usersRouter = require('./users/model');
 
-app.use(cors())
-app.use(bodyParser.json())
+app.use(cors());
+app.use(bodyParser.json());
+app.use(authRouter);
+app.use(usersRouter);
 
-app.get('/questions', (req, res, next) => {
- 
+app.get('/questions', (req, res, next) => { 
   Questions.findAll()
     .then(response => {
       if(!response){
@@ -22,12 +24,7 @@ app.get('/questions', (req, res, next) => {
     })
 })
 
-
 function onListen(){
-  
-app.use(authRouter);
-
-function onListen() {
   console.log('Listening on port 4000')
 }
 const server = app.listen(4000,onListen)
