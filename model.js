@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../db');
+const sequelize = require('./db');
 
 const questions = sequelize.define('questions', {
   id: {
@@ -15,20 +15,27 @@ const questions = sequelize.define('questions', {
     type: Sequelize.TEXT
   },
   level: {
+    type: Sequelize.TEXT
+  },
+  answer_A: {
     type: Sequelize.TEXT,
     allowNull: false
   },
-  answer_A: {
-    type: Sequelize.TEXT
-  },
   answer_B: {
-    type: Sequelize.TEXT
+    type: Sequelize.TEXT,
+    allowNull: false
   },
   answer_C: {
-    type: Sequelize.TEXT
+    type: Sequelize.TEXT,
+    allowNull: false
   },
   answer_D: {
-    type: Sequelize.TEXT
+    type: Sequelize.TEXT,
+    allowNull: false
+  },
+  correct_answer: {
+    type: Sequelize.TEXT,
+    allowNull: false
   }
 });
 
