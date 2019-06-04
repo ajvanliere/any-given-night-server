@@ -60,3 +60,4 @@ io.on('connection', client => {
 
   client.on('disconnect', () => console.log('disconnect test', client.id))
 })
+}
