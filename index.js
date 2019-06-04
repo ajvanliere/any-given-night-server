@@ -4,13 +4,13 @@ const socketIo = require('socket.io')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const Questions = require('./model')
+const authRouter = require('./auth/routes');
 
 app.use(cors())
 app.use(bodyParser.json())
 
 app.get('/questions', (req, res, next) => {
  
-  
   Questions.findAll()
     .then(response => {
       if(!response){
@@ -19,13 +19,15 @@ app.get('/questions', (req, res, next) => {
         })
       }
       emitQuestions(response)
-
     })
 })
 
 
 function onListen(){
   
+app.use(authRouter);
+
+function onListen() {
   console.log('Listening on port 4000')
 }
 const server = app.listen(4000,onListen)
@@ -43,7 +45,6 @@ function emitQuestions() {
     })
     .catch(err => console.log(err))
 }
-
 
 // when socketset connects, it calls this function
 // it calls this function everytime a seperate person connects to it
