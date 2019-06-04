@@ -3,7 +3,8 @@ const socketIo = require('socket.io');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const dispatcher = require('./dispatcher')
-const router = require('./routes');
+const routing = require('./routing');
+const authRouter = require('./auth/routes');
 
 const app = express();
 app.use(cors());
@@ -12,24 +13,24 @@ app.use(bodyParser.json());
 const server = app.listen(4000, onListen);
 const io = socketIo.listen(server);
 
-const dispatch = dispatcher(io);
-// const router = routing(dispatch, questions)
-app.use(router)
+app.use(authRouter);
 
-function onListen () {
+// const dispatch = dispatcher(io);
+// const router = routing(dispatch, questions)
+app.use(routing)
+
+function onListen() {
   console.log('Listening on port 4000')
 }
 
-io.on(
-  'connection',
-  client => {
-    console.log('client.id test:', client.id)
-
-    dispatch(messages)
-
-    client.on(
-      'disconnect',
-      () => console.log('disconnect test:', client.id)
-    )
-  }
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+  client.on(
+    'disconnect',
+    () => console.log('disconnect test:', client.id)
+  )
+}
 );
