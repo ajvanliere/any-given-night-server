@@ -8,14 +8,7 @@ const Questions = require('./model')
 app.use(cors())
 app.use(bodyParser.json())
 
-// router.get('/adds', (req, res, next) => {
-//   Add
-//     .findAll()
-//     .then(adds => {
-//       res.send({adds})
-//     })
-//     .catch(error => next(error))
-// })
+
 app.get('/questions', (req, res, next) => {
  
   
@@ -28,20 +21,7 @@ app.get('/questions', (req, res, next) => {
     })
   })
 
-// app.get('/questions', (req, res, next) => {
- 
-  
-//   Questions.findAll()
-//     .then(response => {
-//       if(!response){
-//         return response.status(404).send({
-//           message: `message does not exist`
-//         })
-//       }
-//       emitQuestions(response)
 
-//     })
-// })
 
 function onListen(){
   
@@ -50,20 +30,9 @@ function onListen(){
 const server = app.listen(4000,onListen)
 const io = socketIo.listen(server)
 
-// function emitQuestions() {
- 
-//   Questions.findAll()
-//     .then(questions => {
-//       const action = {
-//         type: 'MESSAGES',
-//         payload: questions
-//       }
-//       io.emit('action', action)
-//     })
-//     .catch(err => console.log(err))
-// }
 
-const emit =function emitQuestions(questions) {
+
+function emitQuestions(questions) {
         console.log('QUESTIONS', questions)
    
         const action = {
@@ -85,7 +54,7 @@ io.on('connection', client => {
   console.log('client.id.test:', client.id)
   // console.log(client)
   // 
-  emit())
+  emitQuestions()
 
   client.on('disconnect', () => console.log('disconnect test', client.id))
 })
