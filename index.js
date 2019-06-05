@@ -4,47 +4,76 @@ const socketIo = require('socket.io')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const Questions = require('./model')
-const authRouter = require('./auth/routes');
 
 app.use(cors())
 app.use(bodyParser.json())
 
+// router.get('/adds', (req, res, next) => {
+//   Add
+//     .findAll()
+//     .then(adds => {
+//       res.send({adds})
+//     })
+//     .catch(error => next(error))
+// })
 app.get('/questions', (req, res, next) => {
  
-  Questions.findAll()
-    .then(response => {
-      if(!response){
-        return response.status(404).send({
-          message: `message does not exist`
-        })
-      }
-      emitQuestions(response)
+  
+  Questions
+    .findAll()
+    .then(questions => {
+      console.log('SEEE', questions)
+      emitQuestions(questions)
+      res.send({questions})
     })
-})
+  })
 
+// app.get('/questions', (req, res, next) => {
+ 
+  
+//   Questions.findAll()
+//     .then(response => {
+//       if(!response){
+//         return response.status(404).send({
+//           message: `message does not exist`
+//         })
+//       }
+//       emitQuestions(response)
+
+//     })
+// })
 
 function onListen(){
   
-app.use(authRouter);
-
-function onListen() {
   console.log('Listening on port 4000')
 }
 const server = app.listen(4000,onListen)
 const io = socketIo.listen(server)
 
-function emitQuestions() {
+// function emitQuestions() {
  
-  Questions.findAll()
-    .then(questions => {
-      const action = {
-        type: 'MESSAGES',
-        payload: questions
-      }
-      io.emit('action', action)
-    })
-    .catch(err => console.log(err))
-}
+//   Questions.findAll()
+//     .then(questions => {
+//       const action = {
+//         type: 'MESSAGES',
+//         payload: questions
+//       }
+//       io.emit('action', action)
+//     })
+//     .catch(err => console.log(err))
+// }
+
+const emit =function emitQuestions(questions) {
+        console.log('QUESTIONS', questions)
+   
+        const action = {
+          type: 'QUESTIONS',
+          payload: questions
+        }
+        io.emit('action', action)
+      
+     
+  }
 
 // when socketset connects, it calls this function
 // it calls this function everytime a seperate person connects to it
@@ -56,8 +85,7 @@ io.on('connection', client => {
   console.log('client.id.test:', client.id)
   // console.log(client)
   // 
-  emitQuestions()
+  emit())
 
   client.on('disconnect', () => console.log('disconnect test', client.id))
 })
-}
