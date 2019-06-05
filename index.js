@@ -7,11 +7,17 @@ const bodyParser = require('body-parser');
 const Questions = require('./model');
 const authRouter = require('./auth/routes');
 const usersRouter = require('./users/routes');
+const gamesRouter = require('./games/routes');
+const playersRouter = require('./players/routes');
+const answerRouter = require('./answers/routes');
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(authRouter);
 app.use(usersRouter);
+app.use(gamesRouter);
+app.use(playersRouter);
+app.use(answerRouter);
 
 app.get('/questions', (req, res, next) => {
   Questions
@@ -22,6 +28,20 @@ app.get('/questions', (req, res, next) => {
     })
     .catch(console.error)
   })
+
+app.get('/questions/:id', (req, res, next) => {
+    Questions
+    .findByPk(req.params.id)
+    .then (question => { 
+      if (!question) {
+        return res.status(404).send({
+          message: 'Question does not exist (anymore)'
+        })
+      }
+      return res.send(question)
+    })
+    .catch(error => next(error))
+})
 
 const server = app.listen(4000,onListen)
 const io = socketIo.listen(server)
@@ -50,7 +70,7 @@ io.on('connection', client => {
   console.log('client.id.test:', client.id)
   // console.log(client)
   // 
-  emitQuestions()
+  // emitQuestions()
 
   client.on('disconnect', () => console.log('disconnect test', client.id))
 })
