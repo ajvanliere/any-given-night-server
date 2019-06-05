@@ -4,19 +4,19 @@ const User = require('./model');
 const router = new Router();
 
 router.post('/users', (req, res, next) => {
-  const user = {
+ const user = {
     email: req.body.email,
     password: req.body.password
   }
   User
     .create(user)
-    .then(x => {
-      if (!x) {
+    .then(user => {
+      if (!user) {
         return res.status(404).send({
           message: `User does not exist`
         })
       }
-      return res.status(201).send(x)
+      return res.status(201).send(user)
     })
     .catch(error => next(error))
 })
