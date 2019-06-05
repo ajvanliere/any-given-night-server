@@ -1,3 +1,4 @@
+
 const express = require('express');
 const app =express();
 const socketIo = require('socket.io');
@@ -7,23 +8,21 @@ const Questions = require('./model');
 const authRouter = require('./auth/routes');
 const usersRouter = require('./users/routes');
 
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(authRouter);
 app.use(usersRouter);
 
-app.get('/questions', (req, res, next) => { 
-  Questions.findAll()
-    .then(response => {
-      if(!response){
-        return response.status(404).send({
-          message: `message does not exist`
-        })
-      }
-     emitQuestions(response)
-     return response.status(200);
+app.get('/questions', (req, res, next) => {
+  Questions
+    .findAll()
+    .then(questions => {
+      console.log('SEEE', questions)
+      emitQuestions(questions)
+      res.send({questions})
     })
-})
+  })
 
 function onListen(){
   console.log('Listening on port 4000')
@@ -31,18 +30,15 @@ function onListen(){
 const server = app.listen(4000,onListen)
 const io = socketIo.listen(server)
 
-function emitQuestions() {
- 
-  Questions.findAll()
-    .then(questions => {
-      const action = {
-        type: 'MESSAGES',
-        payload: questions
-      }
-      io.emit('action', action)
-    })
-    .catch(err => console.log(err))
-}
+function emitQuestions(questions) {
+        console.log('QUESTIONS', questions)
+   
+        const action = {
+          type: 'QUESTIONS',
+          payload: questions
+        }
+        io.emit('action', action)
+  }
 
 // // when socketset connects, it calls this function
 // // it calls this function everytime a seperate person connects to it
