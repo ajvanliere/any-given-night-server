@@ -9,10 +9,12 @@ const Questions = sequelize.define('questions', {
     primaryKey: true
   },
   category: {
-    type: Sequelize.TEXT
+    type: Sequelize.TEXT,
+    allowNull: false
   },
   question: {
-    type: Sequelize.TEXT
+    type: Sequelize.TEXT,
+    allowNull: false
   },
   level: {
     type: Sequelize.TEXT
