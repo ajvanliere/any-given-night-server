@@ -6,37 +6,29 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const Questions = require('./model');
 const authRouter = require('./auth/routes');
-const usersRouter = require('./users/model');
-
+const usersRouter = require('./users/routes');
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(authRouter);
 app.use(usersRouter);
 
-
 app.get('/questions', (req, res, next) => {
- 
-  
   Questions
     .findAll()
     .then(questions => {
-      console.log('SEEE', questions)
       emitQuestions(questions)
-      res.send({questions})
-
+      res.status(200).send(questions)
     })
+    .catch(console.error)
   })
 
-
-function onListen(){
-  
-  console.log('Listening on port 4000')
-}
 const server = app.listen(4000,onListen)
 const io = socketIo.listen(server)
 
-
+function onListen(){
+  console.log('Listening on port 4000')
+}
 
 function emitQuestions(questions) {
         console.log('QUESTIONS', questions)
@@ -46,8 +38,6 @@ function emitQuestions(questions) {
           payload: questions
         }
         io.emit('action', action)
-      
-     
   }
 
 // when socketset connects, it calls this function
