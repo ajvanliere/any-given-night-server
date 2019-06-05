@@ -1,12 +1,18 @@
-const express = require('express')
-const app =express()
-const socketIo = require('socket.io')
-const cors = require('cors')
-const bodyParser = require('body-parser')
-const Questions = require('./model')
 
-app.use(cors())
-app.use(bodyParser.json())
+const express = require('express');
+const app =express();
+const socketIo = require('socket.io');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const Questions = require('./model');
+const authRouter = require('./auth/routes');
+const usersRouter = require('./users/model');
+
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(authRouter);
+app.use(usersRouter);
 
 
 app.get('/questions', (req, res, next) => {
@@ -18,9 +24,9 @@ app.get('/questions', (req, res, next) => {
       console.log('SEEE', questions)
       emitQuestions(questions)
       res.send({questions})
+
     })
   })
-
 
 
 function onListen(){
