@@ -1,5 +1,8 @@
-const Sequelize = require('sequelize')
-const sequelize = require('../db')
+const Sequelize = require('sequelize');
+const sequelize = require('../db');
+
+const User = require('../users/model');
+const Game = require('../games/model');
 
 const Player = sequelize.define('players', {
   id: {
@@ -23,7 +26,12 @@ const Player = sequelize.define('players', {
   timestamps: false
 })
 
-// Player.hasMany(User);
-// User.belongsTo(Player);
+Player.belongsTo(User,{
+  "foreignKey": "user_id"
+})
+
+Player.belongsTo(Game,{
+  "foreignKey": "game_id"
+})
 
 module.exports = Player;
