@@ -2,7 +2,8 @@
   "name": "any-given-night-server",
   "version": "1.0.0",
   "engines": {
-    "node": "12.1.0"
+    "node": "12.1.0",
+    "npm": "6.9.0"
   },
   "description": "",
   "main": "index.js",
@@ -20,7 +21,7 @@
   "scripts": {
     "postinstall": "npm run build",
     "build": "./node_modules/.bin/webpack --config webpack.conf.js",
-    "start": "node server.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
