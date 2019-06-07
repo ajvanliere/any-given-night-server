@@ -2,15 +2,10 @@ const Sequelize = require('sequelize')
 const sequelize = require('../db')
 
 const Game = sequelize.define('games', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    field: 'ID',
-    primaryKey: true
-  },
   status: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: false,
+    defaultValue: 'lobby'
   },
   name: {
     type: Sequelize.STRING

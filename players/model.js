@@ -5,20 +5,6 @@ const User = require('../users/model');
 const Game = require('../games/model');
 
 const Player = sequelize.define('players', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    field: 'ID',
-    primaryKey: true
-  },
-  game_id: {
-    type: Sequelize.INTEGER,
-    allowNull: false
-  },
-  user_id: {
-    type: Sequelize.INTEGER,
-    allowNull: false
-  },
   board_location: {
     type: Sequelize.INTEGER
   }
@@ -26,12 +12,9 @@ const Player = sequelize.define('players', {
   timestamps: false
 })
 
-Player.belongsTo(User,{
-  "foreignKey": "user_id"
-})
+Player.belongsTo(User)
 
-Player.belongsTo(Game,{
-  "foreignKey": "game_id"
-})
+Player.belongsTo(Game)
+Game.hasMany(Player)
 
 module.exports = Player;

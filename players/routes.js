@@ -7,19 +7,41 @@ const router = new Router();
 
 router.post('/players', (req, res, next) => {
   const player = {
-    game_id: req.body.game_id,
-    user_id: req.body.user_id,
+    //game_id: req.body.game_id,
+    //user_id: req.body.user_id,
     board_location: 0
   }
   Player
     .create(player)
-    .then(x => {
-      if (!x) {
+    .then(player => {
+      if (!player) {
         return res.status(404).send({
           message: `Player does not exist`
         })
       }
-      return res.status(201).send(x)
+
+      User
+        .findByPk(req.body.user_id)
+        .then(user => {
+          player
+            .setUser(user)
+            .then(() => {
+              Game
+              .findByPk(req.body.game_id)
+              .then(game => {
+
+                player
+                  .setGame(game)
+                  .then(() => {
+                    game
+                      .addPlayer(player)
+                      .then(() => {
+                        return res.status(201).send(player)
+                      })
+                  })
+              })
+            })
+        })
     })
     .catch(error => next(error))
 })
@@ -27,8 +49,8 @@ router.post('/players', (req, res, next) => {
 router.get('/players', (req, res, next) => {
   Player
     .findAll({
-      // include: [{ model: User, attributes: ['user_id'] }],
-      // include: [{ model: Game, attributes: ['game_id'] }]
+      include: [{ model: User }],
+      include: [{ model: Game }]
     })
     .then(players => {
       res.status(200).send(players)
