@@ -1,23 +1,37 @@
 const { Router } = require('express');
 const router = new Router();
 const { toJWT } = require('./jwt');
-const { toData } = require('./jwt')
+const { toData } = require('./jwt');
+const bcrypt = require('bcrypt');
+const User = require('../users/model');
 
-router.post('/logins', (req, res) => {
+router.get('/users', (request, response, next) => {
+  User
+    .findAll()
+    .then(users => {
+      response.send({ users })
+    })
+    .catch(error => next(error))
+})
+
+router.post('/users', (req, res) => {
   console.log('hello')
-  const email = req.body.email
-  const password = req.body.password
-
-  if (!email || !password) {
-    res.status(400).send({
-      message: 'Please supply a valid email address!'
-    })
+  const user = {
+    name: req.body.name,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 10)
   }
-  else {
-    res.send({
-      jwt: toJWT({ userId: 1 })
+  User
+    .create(user)
+    .then(x => {
+      if (!x) {
+        return res.status(404).send({
+          message: `User does not exist`
+        })
+      }
+      return res.status(201).send(x)
     })
-  }
+    .catch(error => next(error))
 })
 
 router.get('/secret-endpoint', (req, res) => {
@@ -30,7 +44,7 @@ router.get('/secret-endpoint', (req, res) => {
         data
       })
     }
-    catch(error) {
+    catch (error) {
       res.status(400).send({
         message: `Error ${error.name}: ${error.message}`,
       })
